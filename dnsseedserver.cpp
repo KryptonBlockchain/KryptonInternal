@@ -1,4 +1,5 @@
 #include <thread>
+#include <iostream>
 #include <chrono>
 #include <vector>
 #include <signal.h>
@@ -37,9 +38,23 @@ void justReceive(boost::system::error_code ec, std::size_t bytesReceived,
 }
 }
 
-int main(int, char **)
+int main(int argc, char *argv[])
 {
 	signal(SIGINT, shutdown);
+
+    if (argc != 2)
+    {
+        std::cerr << "Usage: " << argv[0] << " <port>" << std::endl;
+        return 1;
+    }
+
+    int portNo = atoi(argv[1]);
+    if((portNo > 65535) || (portNo < 2000))
+    {
+        std::cerr << "Please enter port number between 2000 - 65535" << std::endl;
+        return 1;
+    }
+
 
 	boost::asio::io_service io;
 	boost::asio::io_service::work work(io);
@@ -51,7 +66,7 @@ int main(int, char **)
 
 	boost::asio::ip::tcp::acceptor acceptor(io,
 	    boost::asio::ip::tcp::endpoint(
-	        boost::asio::ip::address::from_string("127.0.0.1"), 1234));
+	        boost::asio::ip::address::from_string("0.0.0.0"), portNo));
 	boost::asio::ip::tcp::socket socket(io);
 
 	// accept 1 client

@@ -4,6 +4,10 @@
 #include <signal.h>
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
+#include <iostream>
+#include <string>
+
+using namespace std;
 
 namespace
 {
@@ -11,9 +15,26 @@ bool keepGoing = true;
 void shutdown(int) { keepGoing = false; }
 }
 
-int main(int, char **)
+int main(int argc, char *argv[])
 {
 	signal(SIGINT, shutdown);
+
+    if (argc != 3)
+    {
+        cerr << "Usage: " << argv[0] << " <hostname> <port>" << endl;
+        return 1;
+    }
+
+    int portNo = atoi(argv[2]);
+    if((portNo > 65535) || (portNo < 2000))
+    {
+        cerr << "Please enter port number between 2000 - 65535" << endl;
+        return 1;
+    }
+
+    char *hostname = argv[1];
+    char *portStr= argv[2];
+
 
 	boost::asio::io_service io;
 	boost::asio::io_service::work work(io);
@@ -25,7 +46,7 @@ int main(int, char **)
 
 	boost::asio::ip::tcp::socket socket(io);
 	auto endpoint = boost::asio::ip::tcp::resolver(io).resolve({ 
-	    "127.0.0.1", "1234" });
+	    hostname, portStr });
 	boost::asio::connect(socket, endpoint);
 
 	// options to test
