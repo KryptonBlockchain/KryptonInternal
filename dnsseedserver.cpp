@@ -32,7 +32,7 @@ void justReceive(boost::system::error_code ec, std::size_t bytesReceived,
 	socket.async_receive(
 	    boost::asio::buffer(buffer, 2048),
 	    0,
-	    boost::bind(justReceive, _1, _2, boost::ref(socket), 
+	    boost::bind(justReceive, boost::placeholders::_1, boost::placeholders::_2, boost::ref(socket), 
 	                                     boost::ref(buffer)));
 }
 }
@@ -66,7 +66,7 @@ int main(int, char **)
 	    socket.async_receive(
 	        boost::asio::buffer(buffer, 2048),
 	        0,
-	        boost::bind(justReceive, _1, _2, boost::ref(socket), 
+	        boost::bind(justReceive, boost::placeholders::_1, boost::placeholders::_2, boost::ref(socket), 
 	                                         boost::ref(buffer)));
 	});
 
