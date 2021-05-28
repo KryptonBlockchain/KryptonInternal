@@ -1,2 +1,0 @@
-g++ -Wall dnsseedclient.cpp -o client -lboost_system -lboost_thread -lpthread
-g++ -Wall dnsseedserver.cpp -o server -lboost_system -lboost_thread -lpthread
