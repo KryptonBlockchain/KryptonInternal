@@ -72,6 +72,8 @@ target_include_directories(cppcommon PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include
 target_link_libraries(cppcommon ${LINKLIBS} fmt)
 list(APPEND INSTALL_TARGETS cppcommon)
 list(APPEND LINKLIBS cppcommon)
+add_compile_definitions("PACKAGE=cppcommon")
+add_compile_definitions("PACKAGE_VERSION=1")
 
 # Additional module components: benchmarks, examples, plugins, tests, tools and install
 if(NOT CPPCOMMON_MODULE)
