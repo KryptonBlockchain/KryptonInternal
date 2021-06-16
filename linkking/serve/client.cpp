@@ -1,3 +1,5 @@
+#include "asio_service.h"
+
 #include "server/asio/tcp_client.h"
 #include "threads/thread.h"
 
@@ -7,11 +9,7 @@
 class ChatClient : public LinkKing::Asio::TCPClient
 {
 public:
-    ChatClient(std::shared_ptr<LinkKing::Asio::Service> service, const std::string& address, int port)
-        : LinkKing::Asio::TCPClient(service, address, port)
-    {
-        _stop = false;
-    }
+    using LinkKing::Asio::TCPClient::TCPClient;
 
     void DisconnectAndStop()
     {
@@ -50,7 +48,7 @@ protected:
     }
 
 private:
-    std::atomic<bool> _stop;
+    std::atomic<bool> _stop{false};
 };
 
 int main(int argc, char** argv)
@@ -68,8 +66,10 @@ int main(int argc, char** argv)
     std::cout << "TCP server address: " << address << std::endl;
     std::cout << "TCP server port: " << port << std::endl;
 
+    std::cout << std::endl;
+
     // Create a new Asio service
-    auto service = std::make_shared<LinkKing::Asio::Service>();
+    auto service = std::make_shared<AsioService>();
 
     // Start the Asio service
     std::cout << "Asio service starting...";
@@ -93,11 +93,11 @@ int main(int argc, char** argv)
         if (line.empty())
             break;
 
-        // Disconnect the client
+        // Reconnect the client
         if (line == "!")
         {
-            std::cout << "Client disconnecting...";
-            client->DisconnectAsync();
+            std::cout << "Client reconnecting...";
+            client->IsConnected() ? client->ReconnectAsync() : client->ConnectAsync();
             std::cout << "Done!" << std::endl;
             continue;
         }
