@@ -74,21 +74,21 @@ target_link_libraries(linkking ${LINKLIBS} asio)
 list(APPEND INSTALL_TARGETS linkking)
 list(APPEND LINKLIBS linkking)
 
-# Additional module components: benchmarks, examples, plugins, tests, tools and install
+# Additional module components: benchmarks, server, plugins, tests, tools and install
 if(NOT LINKKINGSERVER_MODULE)
 
-  # Examples
-  file(GLOB EXAMPLE_HEADER_FILES "examples/*.h")
-  file(GLOB EXAMPLE_INLINE_FILES "examples/*.inl")
-  file(GLOB EXAMPLE_SOURCE_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/examples" "examples/*.cpp")
-  foreach(EXAMPLE_SOURCE_FILE ${EXAMPLE_SOURCE_FILES})
-    string(REGEX REPLACE "(.*)\\.cpp" "\\1" EXAMPLE_NAME ${EXAMPLE_SOURCE_FILE})
-    set(EXAMPLE_TARGET "linkking-example-${EXAMPLE_NAME}")
-    add_executable(${EXAMPLE_TARGET} ${EXAMPLE_HEADER_FILES} ${EXAMPLE_INLINE_FILES} "examples/${EXAMPLE_SOURCE_FILE}")
-    set_target_properties(${EXAMPLE_TARGET} PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS}" FOLDER "examples")
-    target_link_libraries(${EXAMPLE_TARGET} ${LINKLIBS})
-    list(APPEND INSTALL_TARGETS ${EXAMPLE_TARGET})
-    list(APPEND INSTALL_TARGETS_PDB ${EXAMPLE_TARGET})
+  # Server
+  file(GLOB SERVE_HEADER_FILES "serve/*.h")
+  file(GLOB SERVE_INLINE_FILES "serve/*.inl")
+  file(GLOB SERVE_SOURCE_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/serve" "serve/*.cpp")
+  foreach(SERVE_SOURCE_FILE ${SERVE_SOURCE_FILES})
+    string(REGEX REPLACE "(.*)\\.cpp" "\\1" SERVE_NAME ${SERVE_SOURCE_FILE})
+    set(SERVE_TARGET "linkking-serve-${SERVE_NAME}")
+    add_executable(${SERVE_TARGET} ${SERVE_HEADER_FILES} ${SERVE_INLINE_FILES} "serve/${SERVE_SOURCE_FILE}")
+    set_target_properties(${SERVE_TARGET} PROPERTIES COMPILE_FLAGS "${PEDANTIC_COMPILE_FLAGS}" FOLDER "severs")
+    target_link_libraries(${SERVE_TARGET} ${LINKLIBS})
+    list(APPEND INSTALL_TARGETS ${SERVE_TARGET})
+    list(APPEND INSTALL_TARGETS_PDB ${SERVE_TARGET})
   endforeach()
 
   # Benchmarks
