@@ -573,5 +573,10 @@ void TCPSession::SendError(std::error_code ec)
     onError(ec.value(), ec.category().name(), ec.message());
 }
 
+asio::ip::address TCPSession::GetIPAddr()
+{
+    return _socket.remote_endpoint().address();
+}
+
 } // namespace Asio
 } // namespace LinkKing

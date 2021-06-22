@@ -4,23 +4,64 @@
 
 #include <iostream>
 
+#include "nlohmann_json/single_include/nlohmann/json.hpp"
+
+#include <sstream>
+
+nlohmann::json info;
+
 class ChatSession : public LinkKing::Asio::TCPSession
 {
 public:
     using LinkKing::Asio::TCPSession::TCPSession;
 
 protected:
+    nlohmann::json client;
     void onConnected() override
     {
         std::cout << "Chat TCP session with Id " << id() << " connected!" << std::endl;
 
+        // Convert the IP address to std::string
+        std::stringstream ss;
+        ss << GetIPAddr();
+
+        client["ip"] = ss.str();
+
+        // Clear the stringstream
+        ss.str("");
+        ss.clear();
+
+        // Convert the ID to string
+        ss << id();
+        client["id"] = ss.str();
+        info["clients"].push_back(client);
+
+        // Clear the stringstream
+        ss.str("");
+        ss.clear();
+
         // Send invite message
         std::string message("Hello from TCP chat! Please send a message or '!' to disconnect the client!");
         SendAsync(message);
+
+        // TEMPORARY Send client json
+        ss << info;
+        std::string infoMessage(ss.str());
+        SendAsync(infoMessage);
+        ss.str("");
+        ss.clear();
     }
 
     void onDisconnected() override
     {
+        // Remove the client from the json on disconnect
+        for (int i = 0; i < static_cast<int>(info["clients"].size()); i++)
+        {
+            if (info["clients"][i] == client)
+            {
+                info["clients"].erase(info["clients"].begin() + i);
+            }
+        }
         std::cout << "Chat TCP session with Id " << id() << " disconnected!" << std::endl;
     }
 
@@ -63,6 +104,10 @@ protected:
 
 int main(int argc, char** argv)
 {
+//    info = {
+//            {"clients", {1}}
+//    };
+    info["clients"] = nlohmann::json::array();
     // TCP server port
     int port = 1111;
     if (argc > 1)

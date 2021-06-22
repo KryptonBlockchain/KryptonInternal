@@ -204,6 +204,8 @@ protected:
     */
     virtual void onError(int error, const std::string& category, const std::string& message) {}
 
+    virtual asio::ip::address GetIPAddr();
+
 private:
     // Session Id
     CppCommon::UUID _id;
