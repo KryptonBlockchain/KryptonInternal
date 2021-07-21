@@ -69,6 +69,53 @@ protected:
     {
         std::string message((const char*)buffer, size);
         std::cout << "Incoming: " << message << std::endl;
+        json json_recieved = message
+        std::cout << json_recieved["Type"] << std::endl;
+        if(type == "a") {
+            std::cout << "starting search" << std::endl;
+            ip_to_search = json_recieved["ip"][]
+            info[]
+            int binarySearch(int l, int r, int x)
+            {
+               if (r>=l)
+               {
+                    int mid = l + (r - l)/2;
+                    if (json_recieved["Type"][mid] == x)
+                        return mid;
+                    if (json_recieved["Type"][mid] > x)
+                        return binarySearch(json_recieved["Type"], l, mid-1, x);
+                    return binarySearch(json_recieved["Type"], mid+1, r, x);
+                }
+                return -1;
+            }
+ 
+            int findPos(int key)
+            {
+                int l = 0, h = 1;
+                int val = json_recieved["Type"][0];
+ 
+                // Find h to do binary search
+                while (val < key)
+                {
+                    l = h;        // store previous high
+                    h = 2*h;      // double high index
+                    val = json_recieved["Type"][h]; // update new val
+                }
+ 
+             return binarySearch(json_recieved["Type"], l, h, key);
+            }
+ 
+            
+              int ans = findPos(10);
+             if (ans==-1)
+                 cout << "Element not found";
+              else
+                  cout << "Element found at index " << ans;
+              return 0;
+        }
+
+
+
 
         // Multicast message to all connected sessions
         server()->Multicast(message);

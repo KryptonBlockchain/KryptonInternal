@@ -103,7 +103,8 @@ int main(int argc, char** argv)
         }
 
         // Send the entered text to the chat server
-        client->SendAsync(line);
+        json_to_send = '{ “Type”: "a", “IP”: “192.168.0.1”}'
+        client->SendAsync(json_to_send);
     }
 
     // Disconnect the client
