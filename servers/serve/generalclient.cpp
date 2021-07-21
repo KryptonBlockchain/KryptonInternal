@@ -103,7 +103,7 @@ int main(int argc, char** argv)
         }
 
         // Send the entered text to the chat server
-        json_to_send = '{ “Type”: "a", “IP”: “192.168.0.1”}'
+        std::string json_to_send = "{\"Type\": \"a\", \"IP\": 19216801, \"message\": \"" + line + "\"}";
         client->SendAsync(json_to_send);
     }
 
@@ -116,6 +116,4 @@ int main(int argc, char** argv)
     std::cout << "Asio service stopping...";
     service->Stop();
     std::cout << "Done!" << std::endl;
-
-    return 0;
 }

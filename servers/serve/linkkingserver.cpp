@@ -25,7 +25,21 @@ protected:
         std::stringstream ss;
         ss << GetIPAddr();
 
-        client["ip"] = ss.str();
+        std::string ip = ss.str();
+        size_t index = 0;
+        while (true) {
+            /* Locate the substring to replace. */
+            index = ip.find(".", index);
+            if (index == std::string::npos) break;
+
+            /* Make the replacement. */
+            ip.replace(index, 1, "");
+
+            /* Advance index forward so the next iteration doesn't pick it up as well. */
+            index += 1;
+        }
+
+        client["ip"] = atoi(ip.c_str());
 
         // Clear the stringstream
         ss.str("");
@@ -65,60 +79,47 @@ protected:
         std::cout << "Chat TCP session with Id " << id() << " disconnected!" << std::endl;
     }
 
+    int binarySearch(int l, int r, int x)
+    {
+        if (r>=l)
+        {
+            int mid = l + (r - l)/2;
+            if (mid == 0)
+                return -1;
+            else if (info["clients"][mid] == x)
+                return mid;
+            else if (info["clients"][mid] > x)
+                return binarySearch(l, mid-1, x);
+            return binarySearch(mid+1, r, x);
+        }
+        return -1;
+    }
+
+    int findPos(int key)
+    {
+        int l = 0, h = 1;
+        return binarySearch(l, h, key);
+    }
+
     void onReceived(const void* buffer, size_t size) override
     {
         std::string message((const char*)buffer, size);
         std::cout << "Incoming: " << message << std::endl;
-        json json_recieved = message
-        std::cout << json_recieved["Type"] << std::endl;
-        if(type == "a") {
+        nlohmann::json json_recieved = nlohmann::json::parse(message);
+        if(json_recieved["Type"] == "a") {
             std::cout << "starting search" << std::endl;
-            ip_to_search = json_recieved["ip"][]
-            info[]
-            int binarySearch(int l, int r, int x)
-            {
-               if (r>=l)
-               {
-                    int mid = l + (r - l)/2;
-                    if (json_recieved["Type"][mid] == x)
-                        return mid;
-                    if (json_recieved["Type"][mid] > x)
-                        return binarySearch(json_recieved["Type"], l, mid-1, x);
-                    return binarySearch(json_recieved["Type"], mid+1, r, x);
-                }
-                return -1;
-            }
- 
-            int findPos(int key)
-            {
-                int l = 0, h = 1;
-                int val = json_recieved["Type"][0];
- 
-                // Find h to do binary search
-                while (val < key)
-                {
-                    l = h;        // store previous high
-                    h = 2*h;      // double high index
-                    val = json_recieved["Type"][h]; // update new val
-                }
- 
-             return binarySearch(json_recieved["Type"], l, h, key);
-            }
- 
-            
-              int ans = findPos(10);
-             if (ans==-1)
-                 cout << "Element not found";
-              else
-                  cout << "Element found at index " << ans;
-              return 0;
+            int ans = findPos(json_recieved["IP"]);
+            if (ans==-1)
+                std::cout << "Element not found" << std::endl;
+            else
+                std::cout << "Element found at index " << ans;
         }
 
 
 
 
         // Multicast message to all connected sessions
-        server()->Multicast(message);
+//        server()->Multicast(message);
 
         // If the buffer starts with '!' the disconnect the current session
         if (message == "!")
