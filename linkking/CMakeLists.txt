@@ -48,6 +48,10 @@ endif()
 
 # Modules
 add_subdirectory("modules")
+add_subdirectory(src/common)
+add_subdirectory(src/lib)
+add_subdirectory(src/rnp)
+add_subdirectory(src/rnpkeys)
 
 # Link libraries
 list(APPEND LINKLIBS ${OPENSSL_LIBRARIES})
