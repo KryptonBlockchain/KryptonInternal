@@ -8,6 +8,22 @@
 
 #include <sstream>
 
+#include <openssl/aes.h>
+
+#include <openssl/evp.h>
+
+#include <openssl/rsa.h>
+
+#include <openssl/pem.h>
+
+#include <openssl/ssl.h>
+
+#include <openssl/bio.h>
+
+#include <openssl/err.h>
+
+#include <assert.h>
+
 nlohmann::json info;
 
 class ChatSession : public LinkKing::Asio::TCPSession
